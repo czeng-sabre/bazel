@@ -922,13 +922,32 @@ public class SkylarkRepositoryContext
     return result.build();
   }
 
+  private static final String REPOSITORY_MIRROR = System.getenv("REPOSITORY_MIRROR");
+
+  private static String mapUrl(String url) {
+    try {
+      if (REPOSITORY_MIRROR == null) {
+        return url;
+      }
+      String mirrorUrl = new URL(REPOSITORY_MIRROR + new URL(url).getFile()).toString();
+      System.out.format("URL rewrite: %s | %s\n", url, mirrorUrl);
+      return mirrorUrl;
+    } catch (MalformedURLException e) {
+      throw new IllegalStateException(e);
+    }
+  }
+
+  private static List<String> mapUrls(List<String> urls) {
+    return ImmutableList.copyOf(urls.stream().map(u -> mapUrl(u)).collect(Collectors.toList()));
+  }
+
   private static List<URL> getUrls(Object urlOrList, boolean ensureNonEmpty, boolean checksumGiven)
       throws RepositoryFunctionException, EvalException, InterruptedException {
     List<String> urlStrings;
     if (urlOrList instanceof String) {
-      urlStrings = ImmutableList.of((String) urlOrList);
+      urlStrings = mapUrls(ImmutableList.of((String) urlOrList));
     } else {
-      urlStrings = checkAllUrls((Iterable<?>) urlOrList);
+      urlStrings = mapUrls(checkAllUrls((Iterable<?>) urlOrList));
     }
     if (ensureNonEmpty && urlStrings.isEmpty()) {
       throw new RepositoryFunctionException(new IOException("urls not set"), Transience.PERSISTENT);
