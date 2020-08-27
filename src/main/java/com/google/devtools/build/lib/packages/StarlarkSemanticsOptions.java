@@ -288,6 +288,18 @@ public class StarlarkSemanticsOptions extends OptionsBase implements Serializabl
   public boolean experimentalAllowTagsPropagation;
 
   @Option(
+      name = "incompatible_depset_union",
+      defaultValue = "true",
+      documentationCategory = OptionDocumentationCategory.STARLARK_SEMANTICS,
+      effectTags = {OptionEffectTag.NO_OP},
+      metadataTags = {
+        OptionMetadataTag.INCOMPATIBLE_CHANGE,
+        OptionMetadataTag.TRIGGERED_BY_ALL_INCOMPATIBLE_CHANGES
+      },
+      help = "Temporarily added back in due to compatibility issues")
+  public boolean incompatibleDepsetUnion;
+
+  @Option(
       name = "incompatible_always_check_depset_elements",
       defaultValue = "true",
       documentationCategory = OptionDocumentationCategory.STARLARK_SEMANTICS,
@@ -319,6 +331,18 @@ public class StarlarkSemanticsOptions extends OptionsBase implements Serializabl
               + "function, use `ctx.attr.dep[MyInfo]`. See "
               + "https://github.com/bazelbuild/bazel/issues/9014 for details.")
   public boolean incompatibleDisableTargetProviderFields;
+
+  @Option(
+      name = "incompatible_disable_deprecated_attr_params",
+      defaultValue = "false",
+      documentationCategory = OptionDocumentationCategory.STARLARK_SEMANTICS,
+      effectTags = {OptionEffectTag.NO_OP},
+      metadataTags = {
+        OptionMetadataTag.INCOMPATIBLE_CHANGE,
+        OptionMetadataTag.TRIGGERED_BY_ALL_INCOMPATIBLE_CHANGES
+      },
+      help = "Temporarily added back in due to compatibility issues")
+  public boolean incompatibleDisableDeprecatedAttrParams;
 
   @Option(
       name = "incompatible_disable_depset_items",
@@ -657,9 +681,11 @@ public class StarlarkSemanticsOptions extends OptionsBase implements Serializabl
             .experimentalSiblingRepositoryLayout(experimentalSiblingRepositoryLayout)
             .experimentalExecGroups(experimentalExecGroups)
             .incompatibleApplicableLicenses(incompatibleApplicableLicenses)
+            .incompatibleDepsetUnion(incompatibleDepsetUnion)
             .incompatibleDisableTargetProviderFields(incompatibleDisableTargetProviderFields)
             .incompatibleDisableThirdPartyLicenseChecking(
                 incompatibleDisableThirdPartyLicenseChecking)
+            .incompatibleDisableDeprecatedAttrParams(incompatibleDisableDeprecatedAttrParams)
             .incompatibleAlwaysCheckDepsetElements(incompatibleAlwaysCheckDepsetElements)
             .incompatibleDisableDepsetItems(incompatibleDisableDepsetItems)
             .incompatibleDisallowEmptyGlob(incompatibleDisallowEmptyGlob)
