@@ -1012,7 +1012,7 @@ public class StarlarkRepositoryContext
 
   private static String mapUrl(String url) {
     try {
-      if (REPOSITORY_MIRROR == null) {
+	if (REPOSITORY_MIRROR == null || url.contains("localhost")) {
         return url;
       }
       String mirrorUrl = new URL(REPOSITORY_MIRROR + new URL(url).getFile()).toString();
