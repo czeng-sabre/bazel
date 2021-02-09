@@ -1010,13 +1010,17 @@ public class StarlarkRepositoryContext
 
   private static final String REPOSITORY_MIRROR = System.getenv("REPOSITORY_MIRROR");
 
-  private static String mapUrl(String url) {
+  private static String mapUrl(String urlString) {
     try {
-	if (REPOSITORY_MIRROR == null || url.contains("localhost")) {
-        return url;
+      if (REPOSITORY_MIRROR == null || urlString.contains("localhost")) {
+        return urlString;
       }
-      String mirrorUrl = new URL(REPOSITORY_MIRROR + new URL(url).getFile()).toString();
-      System.out.format("URL rewrite: %s | %s\n", url, mirrorUrl);
+      URL url = new URL(urlString);
+      if (new URL(REPOSITORY_MIRROR).getHost().equals(url.getHost())) {
+        return urlString;
+      }
+      String mirrorUrl = new URL(REPOSITORY_MIRROR + url.getFile()).toString();
+      System.out.format("URL rewrite: %s | %s\n", urlString, mirrorUrl);
       return mirrorUrl;
     } catch (MalformedURLException e) {
       throw new IllegalStateException(e);
