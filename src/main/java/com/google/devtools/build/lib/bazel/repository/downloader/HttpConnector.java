@@ -91,6 +91,8 @@ class HttpConnector {
     return Math.round(unscaled * timeoutScaling);
   }
 
+  private static final String REPOSITORY_AUTHORIZATION = System.getenv("REPOSITORY_AUTHORIZATION");
+
   URLConnection connect(URL originalUrl, Function<URL, ImmutableMap<String, String>> requestHeaders)
       throws IOException {
 
@@ -123,6 +125,9 @@ class HttpConnector {
             continue;
           }
           connection.addRequestProperty(entry.getKey(), entry.getValue());
+        }
+        if (REPOSITORY_AUTHORIZATION != null) {
+          connection.addRequestProperty("Authorization", REPOSITORY_AUTHORIZATION);
         }
         if (connection.getRequestProperty("User-Agent") == null) {
           connection.setRequestProperty("User-Agent", USER_AGENT_VALUE);

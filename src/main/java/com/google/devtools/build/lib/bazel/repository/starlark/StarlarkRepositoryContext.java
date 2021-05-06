@@ -84,6 +84,7 @@ import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import net.starlark.java.eval.Dict;
 import net.starlark.java.eval.EvalException;
@@ -1051,13 +1052,43 @@ public class StarlarkRepositoryContext
     return result.build();
   }
 
+  private static final String REPOSITORY_MIRROR = System.getenv("REPOSITORY_MIRROR");
+  private static final String REPOSITORY_AUTHORIZATION = System.getenv("REPOSITORY_AUTHORIZATION");
+
+  private static String mapUrl(String urlString) {
+    if (!REPOSITORY_MIRROR.toLowerCase().contains("sabre") && REPOSITORY_AUTHORIZATION != null) {
+      throw new IllegalStateException("ERROR: REPOSITORY_MIRROR is a non-Sabre URL with "
+                                      + "credentials being set in REPOSITORY_AUTHORIZATION. "
+                                      + "Please unset REPOSITORY_AUTHORIZATION.");
+    }
+    try {
+      if (REPOSITORY_MIRROR == null || urlString.contains("localhost")) {
+        return urlString;
+      }
+      URL url = new URL(urlString);
+      if (new URL(REPOSITORY_MIRROR).getHost().equals(url.getHost())) {
+        return urlString;
+      }
+      String mirrorUrl = new URL(REPOSITORY_MIRROR + url.getFile()).toString();
+      System.out.format("URL rewrite: %s | %s\n", urlString, mirrorUrl);
+      return mirrorUrl;
+    } catch (MalformedURLException e) {
+      throw new IllegalStateException(e);
+    }
+  }
+
+  private static List<String> mapUrls(List<String> urls) {
+    return ImmutableList.copyOf(urls.stream().map(u -> mapUrl(u)).collect(Collectors.toList()));
+  }
+
+
   private static List<URL> getUrls(Object urlOrList, boolean ensureNonEmpty, boolean checksumGiven)
       throws RepositoryFunctionException, EvalException, InterruptedException {
     List<String> urlStrings;
     if (urlOrList instanceof String) {
-      urlStrings = ImmutableList.of((String) urlOrList);
+        urlStrings = mapUrls(ImmutableList.of((String) urlOrList));
     } else {
-      urlStrings = checkAllUrls((Iterable<?>) urlOrList);
+        urlStrings = mapUrls(checkAllUrls((Iterable<?>) urlOrList));
     }
     if (ensureNonEmpty && urlStrings.isEmpty()) {
       throw new RepositoryFunctionException(new IOException("urls not set"), Transience.PERSISTENT);
