@@ -274,6 +274,18 @@ public class BuildLanguageOptions extends OptionsBase implements Serializable {
   public boolean incompatibleStructHasNoMethods;
 
   @Option(
+      name = "incompatible_depset_union",
+      defaultValue = "true",
+      documentationCategory = OptionDocumentationCategory.STARLARK_SEMANTICS,
+      effectTags = {OptionEffectTag.NO_OP},
+      metadataTags = {
+        OptionMetadataTag.INCOMPATIBLE_CHANGE,
+        OptionMetadataTag.TRIGGERED_BY_ALL_INCOMPATIBLE_CHANGES
+      },
+      help = "Temporarily added back in due to compatibility issues")
+  public boolean incompatibleDepsetUnion;
+
+  @Option(
       name = "incompatible_always_check_depset_elements",
       defaultValue = "true",
       documentationCategory = OptionDocumentationCategory.STARLARK_SEMANTICS,
@@ -305,6 +317,18 @@ public class BuildLanguageOptions extends OptionsBase implements Serializable {
               + "function, use `ctx.attr.dep[MyInfo]`. See "
               + "https://github.com/bazelbuild/bazel/issues/9014 for details.")
   public boolean incompatibleDisableTargetProviderFields;
+
+  @Option(
+      name = "incompatible_disable_deprecated_attr_params",
+      defaultValue = "false",
+      documentationCategory = OptionDocumentationCategory.STARLARK_SEMANTICS,
+      effectTags = {OptionEffectTag.NO_OP},
+      metadataTags = {
+        OptionMetadataTag.INCOMPATIBLE_CHANGE,
+        OptionMetadataTag.TRIGGERED_BY_ALL_INCOMPATIBLE_CHANGES
+      },
+      help = "Temporarily added back in due to compatibility issues")
+  public boolean incompatibleDisableDeprecatedAttrParams;
 
   @Option(
       name = "incompatible_disable_depset_items",
@@ -621,6 +645,7 @@ public class BuildLanguageOptions extends OptionsBase implements Serializable {
             .setBool(
                 INCOMPATIBLE_DISABLE_TARGET_PROVIDER_FIELDS,
                 incompatibleDisableTargetProviderFields)
+            .setBool(INCOMPATIBLE_DISABLE_DEPRECATED_ATTR_PARAMS, incompatibleDisableDeprecatedAttrParams)
             .setBool(
                 INCOMPATIBLE_DISABLE_THIRD_PARTY_LICENSE_CHECKING,
                 incompatibleDisableThirdPartyLicenseChecking)
@@ -638,6 +663,7 @@ public class BuildLanguageOptions extends OptionsBase implements Serializable {
             .setBool(INCOMPATIBLE_NO_RULE_OUTPUTS_PARAM, incompatibleNoRuleOutputsParam)
             .setBool(INCOMPATIBLE_RUN_SHELL_COMMAND_STRING, incompatibleRunShellCommandString)
             .setBool(INCOMPATIBLE_STRUCT_HAS_NO_METHODS, incompatibleStructHasNoMethods)
+            .setBool(INCOMPATIBLE_DEPSET_UNION, incompatibleDepsetUnion)
             .setBool(
                 INCOMPATIBLE_VISIBILITY_PRIVATE_ATTRIBUTES_AT_DEFINITION,
                 incompatibleVisibilityPrivateAttributesAtDefinition)
@@ -687,6 +713,8 @@ public class BuildLanguageOptions extends OptionsBase implements Serializable {
       "+experimental_starlark_config_transitions";
   public static final String INCOMPATIBLE_ALLOW_TAGS_PROPAGATION =
       "-incompatible_allow_tags_propagation";
+  public static final String INCOMPATIBLE_DEPSET_UNION =
+      "+incompatible_depset_union";
   public static final String INCOMPATIBLE_ALWAYS_CHECK_DEPSET_ELEMENTS =
       "+incompatible_always_check_depset_elements";
   public static final String INCOMPATIBLE_APPLICABLE_LICENSES = "-incompatible_applicable_licenses";
@@ -696,6 +724,8 @@ public class BuildLanguageOptions extends OptionsBase implements Serializable {
       "-incompatible_disable_depset_items";
   public static final String INCOMPATIBLE_DISABLE_TARGET_PROVIDER_FIELDS =
       "-incompatible_disable_target_provider_fields";
+  public static final String INCOMPATIBLE_DISABLE_DEPRECATED_ATTR_PARAMS =
+      "-incompatible_disable_deprecated_attr_params";
   public static final String INCOMPATIBLE_DISABLE_THIRD_PARTY_LICENSE_CHECKING =
       "+incompatible_disable_third_party_license_checking";
   public static final String INCOMPATIBLE_DISALLOW_EMPTY_GLOB = "-incompatible_disallow_empty_glob";
