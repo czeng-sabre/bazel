@@ -1056,7 +1056,7 @@ public class StarlarkRepositoryContext
   private static final String REPOSITORY_AUTHORIZATION = System.getenv("REPOSITORY_AUTHORIZATION");
 
   private static String mapUrl(String urlString) {
-    if (!REPOSITORY_MIRROR.toLowerCase().contains("sabre") && REPOSITORY_AUTHORIZATION != null) {
+    if ((REPOSITORY_MIRROR == null || !REPOSITORY_MIRROR.toLowerCase().contains("sabre")) && REPOSITORY_AUTHORIZATION != null) {
       throw new IllegalStateException("ERROR: REPOSITORY_MIRROR is a non-Sabre URL with "
                                       + "credentials being set in REPOSITORY_AUTHORIZATION. "
                                       + "Please unset REPOSITORY_AUTHORIZATION.");
