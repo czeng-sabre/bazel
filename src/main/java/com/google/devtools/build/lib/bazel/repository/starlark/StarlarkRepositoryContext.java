@@ -1070,7 +1070,7 @@ public class StarlarkRepositoryContext
         return urlString;
       }
       String mirrorUrl = new URL(REPOSITORY_MIRROR + url.getFile()).toString();
-      System.out.format("URL rewrite: %s | %s\n", urlString, mirrorUrl);
+      System.err.format("URL rewrite: %s | %s\n", urlString, mirrorUrl);
       return mirrorUrl;
     } catch (MalformedURLException e) {
       throw new IllegalStateException(e);
