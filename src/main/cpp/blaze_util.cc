@@ -40,9 +40,9 @@ using std::vector;
 
 const char kServerPidFile[] = "server.pid.txt";
 
-const unsigned int kPostShutdownGracePeriodSeconds = 60;
+const unsigned int kPostShutdownGracePeriodSeconds = 5;
 
-const unsigned int kPostKillGracePeriodSeconds = 10;
+const unsigned int kPostKillGracePeriodSeconds = 5;
 
 const char* GetUnaryOption(const char *arg,
                            const char *next_arg,
